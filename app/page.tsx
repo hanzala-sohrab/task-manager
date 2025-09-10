@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AuthForm from './components/AuthForm';
+import TaskList from './components/TaskList';
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -157,27 +158,15 @@ export default function Home() {
   }
 
   if (isAuthenticated && user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 max-w-md w-full text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Welcome to Task Manager!
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Hello {user.name || user.email}! You&apos;re successfully signed in.
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
-            This is where your task management dashboard will be implemented.
-          </p>
-          <button
-            onClick={handleSignOut}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    );
+    const authToken = localStorage.getItem('authToken');
+    
+    if (!authToken) {
+      // If no token, sign out
+      handleSignOut();
+      return null;
+    }
+
+    return <TaskList authToken={authToken} onSignOut={handleSignOut} />;
   }
 
   return (
