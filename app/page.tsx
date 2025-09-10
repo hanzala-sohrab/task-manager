@@ -1,103 +1,188 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import AuthForm from './components/AuthForm';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Check for existing authentication on component mount
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('authToken');
+      const storedUser = localStorage.getItem('userData');
+      
+      if (token && storedUser) {
+        try {
+          // Validate token with backend
+          const validateResponse = await fetch('http://localhost:8000/users/me', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (validateResponse.ok) {
+            // Token is valid, restore user session
+            const userData = JSON.parse(storedUser);
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            // Token is invalid or expired, clear stored data
+            console.log('Token validation failed, clearing stored data');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('tokenType');
+            localStorage.removeItem('userData');
+          }
+        } catch (error) {
+          console.error('Error validating token:', error);
+          // Clear invalid data on network error or parsing error
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('tokenType');
+          localStorage.removeItem('userData');
+        }
+      }
+      
+      setIsCheckingAuth(false);
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  const handleAuth = async (email: string, password: string, name?: string) => {
+    setIsLoading(true);
+    
+    try {
+      if (name) {
+        // Sign up flow - you may need to adjust this endpoint based on your backend
+        const signupResponse = await fetch('http://localhost:8000/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            name,
+          }),
+        });
+
+        if (!signupResponse.ok) {
+          const errorData = await signupResponse.json();
+          throw new Error(errorData.message || 'Failed to create account');
+        }
+
+        const signupData = await signupResponse.json();
+        console.log('Signup successful:', signupData);
+      }
+
+      // Login flow
+      const loginResponse = await fetch('http://localhost:8000/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'password',
+          username: email,
+          password: password,
+          scope: '',
+          client_id: 'string',
+          client_secret: '',
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        const errorData = await loginResponse.json();
+        throw new Error(errorData.message || 'Invalid email or password');
+      }
+
+      const loginData = await loginResponse.json();
+      console.log('Login successful:', loginData);
+
+      // Store user data and token if provided
+      const userData = {
+        email,
+        name: loginData.user?.name || name,
+      };
+
+      // Store access token in localStorage if provided by backend
+      if (loginData.access_token) {
+        localStorage.setItem('authToken', loginData.access_token);
+        localStorage.setItem('tokenType', loginData.token_type || 'bearer');
+        localStorage.setItem('userData', JSON.stringify(userData));
+      }
+
+      setUser(userData);
+      setIsAuthenticated(true);
+      
+      alert(`${name ? 'Account created and signed in' : 'Signed in'} successfully! Welcome${userData.name ? ` ${userData.name}` : ''}!`);
+      
+    } catch (error) {
+      console.error('Authentication error:', error);
+      alert(error instanceof Error ? error.message : 'Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignOut = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    // Clear stored token and user data
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('tokenType');
+    localStorage.removeItem('userData');
+  };
+
+  // Show loading spinner while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 max-w-md w-full text-center">
+          <div className="flex items-center justify-center mb-4">
+            <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400">Checking authentication...</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+    );
+  }
+
+  if (isAuthenticated && user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 max-w-md w-full text-center">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Welcome to Task Manager!
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Hello {user.name || user.email}! You&apos;re successfully signed in.
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
+            This is where your task management dashboard will be implemented.
+          </p>
+          <button
+            onClick={handleSignOut}
+            className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <AuthForm onSubmit={handleAuth} isLoading={isLoading} />
     </div>
   );
 }
