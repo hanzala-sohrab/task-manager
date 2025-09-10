@@ -70,6 +70,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100 transition-colors"
+            onClick={(e) => e.stopPropagation()}
           >
             <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
@@ -78,17 +79,31 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
           </a>
         )}
         {task.pull_requests_links && task.pull_requests_links !== 'string' && (
-          <a
-            href={task.pull_requests_links}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100 transition-colors"
-          >
-            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-            </svg>
-            PR
-          </a>
+          task.pull_requests_links.split(',').slice(0, 2).map((link, index) => {
+            const trimmedLink = link.trim();
+            if (!trimmedLink) return null;
+            
+            return (
+              <a
+                key={index}
+                href={trimmedLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                </svg>
+                PR{task.pull_requests_links.split(',').length > 1 ? ` ${index + 1}` : ''}
+              </a>
+            );
+          })
+        )}
+        {task.pull_requests_links && task.pull_requests_links !== 'string' && task.pull_requests_links.split(',').length > 2 && (
+          <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+            +{task.pull_requests_links.split(',').length - 2} more
+          </span>
         )}
       </div>
 
