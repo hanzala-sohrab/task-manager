@@ -124,6 +124,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const handleUpdateTask = async (task: Partial<Task>) => {
     // Add handleUpdateTask function
     try {
+      delete task.username
       const response = await fetch(`http://localhost:8000/tasks/${task.id}`, {
         method: "PUT",
         headers: {
