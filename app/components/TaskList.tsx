@@ -121,6 +121,32 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     setIsTaskFormOpen(false);
   };
 
+  const handleUpdateTask = async (task: Partial<Task>) => {
+    // Add handleUpdateTask function
+    try {
+      const response = await fetch(`http://localhost:8000/tasks/${task.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update task: ${response.status}`);
+      }
+
+      const taskData = await response.json();
+      setTasks(tasks.map((t) => (t.id === taskData.id ? taskData : t)));
+    } catch (err) {
+      console.error("Error updating task:", err);
+      setError(err instanceof Error ? err.message : "Failed to update task");
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
@@ -335,6 +361,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
         task={selectedTask}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        onUpdateTask={handleUpdateTask}
       />
 
       {/* Task Form Modal */}
