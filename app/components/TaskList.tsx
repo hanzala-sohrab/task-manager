@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Task } from "../types/task";
 import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal"; // Import TaskModal component
+import TaskForm from "./TaskForm"; // Import TaskForm component
 
 interface TaskListProps {
   authToken: string;
@@ -17,6 +18,8 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const [filter, setFilter] = useState<string>("all");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null); // Add state for selected task
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state for modal open
+  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false); // Add state for task form modal open
+  const [isCreatingTask, setIsCreatingTask] = useState(false); // Add state for creating task
 
   useEffect(() => {
     fetchTasks();
@@ -83,6 +86,39 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const handleCloseModal = () => {
     // Add handleCloseModal function
     setIsModalOpen(false);
+  };
+
+  const handleCreateTask = async (task: Task) => {
+    // Add handleCreateTask function
+    setIsCreatingTask(true);
+    try {
+      const response = await fetch("http://localhost:8000/tasks", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create task: ${response.status}`);
+      }
+
+      const taskData = await response.json();
+      setTasks([...tasks, taskData]);
+    } catch (err) {
+      console.error("Error creating task:", err);
+      setError(err instanceof Error ? err.message : "Failed to create task");
+    } finally {
+      setIsCreatingTask(false);
+      setIsTaskFormOpen(false);
+    }
+  };
+
+  const handleCloseTaskForm = () => {
+    // Add handleCloseTaskForm function
+    setIsTaskFormOpen(false);
   };
 
   if (loading) {
@@ -205,6 +241,25 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                 </svg>
                 Sign Out
               </button>
+              <button
+                onClick={() => setIsTaskFormOpen(true)}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  ></path>
+                </svg>
+                Create Task
+              </button>
             </div>
           </div>
 
@@ -280,6 +335,15 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
         task={selectedTask}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      {/* Task Form Modal */}
+      <TaskForm
+        isOpen={isTaskFormOpen}
+        onClose={handleCloseTaskForm}
+        onSubmit={handleCreateTask}
+        userId={1} // TODO: Get actual user ID from auth context
+        isLoading={isCreatingTask}
       />
     </div>
   );
