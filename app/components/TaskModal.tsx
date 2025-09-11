@@ -208,7 +208,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
                   <span className="text-sm text-gray-900 dark:text-white">#{task.id}</span>
                 </div>
                 <div className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">User ID:</span>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Assignee:</span>
                   {isEditMode ? (
                     <input
                       type="number"
@@ -218,7 +218,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
                       className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1"
                     />
                   ) : (
-                    <span className="text-sm text-gray-900 dark:text-white">{task.user_id}</span>
+                    <span className="text-sm text-gray-900 dark:text-white">{task.username}</span>
                   )}
                 </div>
                 <div className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded">

@@ -9,6 +9,7 @@ export interface Task {
   jira_link: string;
   created_by: number;
   pull_requests_links: string;
+  username: string;
 }
 
 export interface TasksResponse {
