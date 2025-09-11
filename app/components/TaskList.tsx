@@ -88,7 +88,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     setIsModalOpen(false);
   };
 
-  const handleCreateTask = async (task: Task) => {
+  const handleCreateTask = async (task: Partial<Task>) => {
     // Add handleCreateTask function
     setIsCreatingTask(true);
     try {
