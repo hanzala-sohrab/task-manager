@@ -232,7 +232,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
             <div className="flex items-center gap-3">
               <button
                 onClick={fetchTasks}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <svg
                   className="w-4 h-4"
@@ -251,7 +251,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               </button>
               <button
                 onClick={onSignOut}
-                className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <svg
                   className="w-4 h-4"
@@ -271,7 +271,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               </button>
               <button
                 onClick={() => setIsTaskFormOpen(true)}
-                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <svg
                   className="w-4 h-4"
@@ -310,7 +310,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               <button
                 key={key}
                 onClick={() => setFilter(key)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors cursor-pointer ${
                   filter === key
                     ? "bg-blue-600 text-white"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600"
@@ -350,7 +350,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" >
             {filteredTasks.map((task) => (
               <TaskCard key={task.id} task={task} onClick={handleTaskClick} />
             ))}

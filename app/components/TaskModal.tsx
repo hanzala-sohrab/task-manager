@@ -134,7 +134,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -319,14 +319,14 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
               <button
                 onClick={handleCancelEdit}
                 disabled={isLoading}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </button>
@@ -335,13 +335,13 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
             <>
               <button
                 onClick={handleEditClick}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors cursor-pointer"
               >
                 Edit Task
               </button>
               <button
                 onClick={onClose}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-lg transition-colors cursor-pointer"
               >
                 Close
               </button>

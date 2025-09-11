@@ -34,7 +34,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
 
   return (
     <div 
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow cursor-pointer"
       onClick={() => onClick(task)}
     >
       {/* Header */}
