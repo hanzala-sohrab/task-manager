@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { Task } from '../types/task';
+import { copyToClipboard } from '../utils/copyToClipboard';
 
 interface TaskCardProps {
   task: Task;
@@ -8,6 +10,8 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, onClick }: TaskCardProps) {
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -29,6 +33,17 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const handleCopyLink = async (link: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await copyToClipboard(link);
+      setCopiedLink(link);
+      setTimeout(() => setCopiedLink(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy link:', error);
     }
   };
 
@@ -65,18 +80,36 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
       {/* Links and Actions */}
       <div className="flex flex-wrap gap-2 mb-3">
         {task.jira_link && task.jira_link !== 'string' && (
-          <a
-            href={task.jira_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100 transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
-            </svg>
-            Jira
-          </a>
+          <div className="flex items-center gap-1">
+            <a
+              href={task.jira_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
+              </svg>
+              Jira
+            </a>
+            <button
+              onClick={(e) => handleCopyLink(task.jira_link, e)}
+              className="inline-flex items-center px-1.5 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200 transition-colors"
+              title="Copy Jira link"
+            >
+              {copiedLink === task.jira_link ? (
+                <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                  <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                </svg>
+              )}
+            </button>
+          </div>
         )}
         {task.pull_requests_links && task.pull_requests_links !== 'string' && (
           task.pull_requests_links.split(',').slice(0, 2).map((link, index) => {
@@ -84,19 +117,36 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
             if (!trimmedLink) return null;
             
             return (
-              <a
-                key={index}
-                href={trimmedLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100 transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-                </svg>
-                PR{task.pull_requests_links.split(',').length > 1 ? ` ${index + 1}` : ''}
-              </a>
+              <div key={index} className="flex items-center gap-1">
+                <a
+                  href={trimmedLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                  </svg>
+                  PR{task.pull_requests_links.split(',').length > 1 ? ` ${index + 1}` : ''}
+                </a>
+                <button
+                  onClick={(e) => handleCopyLink(trimmedLink, e)}
+                  className="inline-flex items-center px-1.5 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200 transition-colors"
+                  title="Copy PR link"
+                >
+                  {copiedLink === trimmedLink ? (
+                    <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                      <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             );
           })
         )}
