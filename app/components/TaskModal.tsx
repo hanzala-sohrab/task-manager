@@ -282,7 +282,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
                     </a>
                     <button
                       onClick={(e) => handleCopyLink(task.jira_link, e)}
-                      className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-sm hover:bg-gray-200 transition-colors"
+                      className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-sm hover:bg-gray-200 transition-colors cursor-pointer"
                       title="Copy Jira link"
                     >
                       {copiedLink === task.jira_link ? (
@@ -334,7 +334,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
                           </a>
                           <button
                             onClick={(e) => handleCopyLink(trimmedLink, e)}
-                            className="inline-flex items-center px-1.5 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200 transition-colors"
+                            className="inline-flex items-center px-1.5 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200 transition-colors cursor-pointer"
                             title="Copy PR link"
                           >
                             {copiedLink === trimmedLink ? (
