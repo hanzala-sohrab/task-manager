@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Task } from "../types/task";
+import { tasksApi } from "../services/api";
 import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal"; // Import TaskModal component
 import TaskForm from "./TaskForm"; // Import TaskForm component
@@ -30,20 +31,8 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("http://localhost:8000/tasks", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
-      }
-
-      const tasksData = await response.json();
-      setTasks(Array.isArray(tasksData) ? tasksData : []);
+      const tasksData = await tasksApi.getTasks(authToken);
+      setTasks(tasksData);
     } catch (err) {
       console.error("Error fetching tasks:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch tasks");
@@ -60,9 +49,9 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const getStatusCounts = () => {
     const counts = {
       all: tasks.length,
-      pending: 0, // TODO: fix this
-      in_progress: 0, // TODO: fix this
-      completed: 0, // TODO: fix this
+      pending: 0,
+      in_progress: 0,
+      completed: 0,
     };
 
     tasks.forEach((task) => {
@@ -92,20 +81,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     // Add handleCreateTask function
     setIsCreatingTask(true);
     try {
-      const response = await fetch("http://localhost:8000/tasks", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to create task: ${response.status}`);
-      }
-
-      const taskData = await response.json();
+      const taskData = await tasksApi.createTask(authToken, task);
       setTasks([...tasks, taskData]);
     } catch (err) {
       console.error("Error creating task:", err);
@@ -125,20 +101,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     // Add handleUpdateTask function
     try {
       delete task.username
-      const response = await fetch(`http://localhost:8000/tasks/${task.id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update task: ${response.status}`);
-      }
-
-      const taskData = await response.json();
+      const taskData = await tasksApi.updateTask(authToken, task.id!, task);
       setTasks(tasks.map((t) => (t.id === taskData.id ? taskData : t)));
     } catch (err) {
       console.error("Error updating task:", err);

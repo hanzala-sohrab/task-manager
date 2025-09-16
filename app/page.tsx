@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AuthForm from './components/AuthForm';
 import TaskList from './components/TaskList';
+import { authApi, LoginResponse } from './services/api';
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,26 +20,9 @@ export default function Home() {
       if (token && storedUser) {
         try {
           // Validate token with backend
-          const validateResponse = await fetch('http://localhost:8000/users/me', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (validateResponse.ok) {
-            // Token is valid, restore user session
-            const userData = JSON.parse(storedUser);
-            setUser(userData);
-            setIsAuthenticated(true);
-          } else {
-            // Token is invalid or expired, clear stored data
-            console.log('Token validation failed, clearing stored data');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('tokenType');
-            localStorage.removeItem('userData');
-          }
+          const userData = await authApi.validateToken(token);
+          setUser(userData);
+          setIsAuthenticated(true);
         } catch (error) {
           console.error('Error validating token:', error);
           // Clear invalid data on network error or parsing error
@@ -59,50 +43,12 @@ export default function Home() {
     
     try {
       if (name) {
-        // Sign up flow - you may need to adjust this endpoint based on your backend
-        const signupResponse = await fetch('http://localhost:8000/users/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: email,
-            password,
-            // name,
-          }),
-        });
-
-        if (!signupResponse.ok) {
-          const errorData = await signupResponse.json();
-          throw new Error(errorData.message || 'Failed to create account');
-        }
-
-        const signupData = await signupResponse.json();
-        console.log('Signup successful:', signupData);
+        // Sign up flow
+        await authApi.register(email, password);
       }
 
       // Login flow
-      const loginResponse = await fetch('http://localhost:8000/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          grant_type: 'password',
-          username: email,
-          password: password,
-          scope: '',
-          client_id: 'string',
-          client_secret: '',
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        const errorData = await loginResponse.json();
-        throw new Error(errorData.message || 'Invalid email or password');
-      }
-
-      const loginData = await loginResponse.json();
+      const loginData: LoginResponse = await authApi.login(email, password);
       console.log('Login successful:', loginData);
 
       // Store user data and token if provided
