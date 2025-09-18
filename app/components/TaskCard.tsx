@@ -36,6 +36,19 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     }
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case 'high':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
   const handleCopyLink = async (link: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -57,9 +70,14 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
           {task.title}
         </h3>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(task.status)}`}>
-          {task.status.replace('_', ' ').toUpperCase()}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(task.status)}`}>
+            {task.status.replace('_', ' ').toUpperCase()}
+          </span>
+          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getPriorityColor(task.priority)}`}>
+            {task.priority.toUpperCase()}
+          </span>
+        </div>
       </div>
 
       {/* Description */}

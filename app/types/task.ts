@@ -1,4 +1,4 @@
-export interface Task {
+export type Task = {
   id: number;
   title: string;
   description: string;
@@ -10,8 +10,9 @@ export interface Task {
   created_by: number;
   pull_requests_links: string;
   username: string;
+  priority: 'low' | 'medium' | 'high';
 }
 
-export interface TasksResponse {
+export type TasksResponse = {
   tasks: Task[];
 }

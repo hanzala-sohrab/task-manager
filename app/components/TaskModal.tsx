@@ -50,6 +50,19 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
     }
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case 'high':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -127,23 +140,41 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
                 {task.title}
               </h2>
             )}
-            {isEditMode ? (
-              <select
-                name="status"
-                value={formData?.status || ''}
-                onChange={handleInputChange}
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(formData?.status || '')} bg-gray-50 dark:bg-gray-700`}
-              >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            ) : (
-              <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(task.status)}`}>
-                {task.status.replace('_', ' ').toUpperCase()}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {isEditMode ? (
+                <select
+                  name="status"
+                  value={formData?.status || ''}
+                  onChange={handleInputChange}
+                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(formData?.status || '')} bg-gray-50 dark:bg-gray-700`}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              ) : (
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(task.status)}`}>
+                  {task.status.replace('_', ' ').toUpperCase()}
+                </span>
+              )}
+              {isEditMode ? (
+                <select
+                  name="priority"
+                  value={formData?.priority || ''}
+                  onChange={handleInputChange}
+                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getPriorityColor(formData?.priority || '')} bg-gray-50 dark:bg-gray-700`}
+                >
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              ) : (
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getPriorityColor(task.priority)}`}>
+                  {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                </span>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}

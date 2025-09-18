@@ -1,21 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Task } from "../types/task";
 
 interface TaskFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (taskData: {
-    title: string;
-    description: string;
-    status: string;
-    user_id: number;
-    start_date: string;
-    end_date: string;
-    jira_link: string;
-    created_by: number;
-    pull_requests_links: string;
-  }) => Promise<void>;
+  onSubmit: (taskData: Partial<Task>) => Promise<void>;
   userId: number;
   isLoading?: boolean;
 }
@@ -26,6 +17,14 @@ const statusOptions = [
   { value: "completed", label: "Completed" },
 ];
 
+const priorityOptions = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+];
+
+type FormData = Omit<Task, 'pull_requests_links' | 'id' | 'username'> & { pull_requests_links: string[] };
+
 export default function TaskForm({
   isOpen,
   onClose,
@@ -33,7 +32,7 @@ export default function TaskForm({
   userId,
   isLoading = false,
 }: TaskFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
     status: "pending",
@@ -43,6 +42,7 @@ export default function TaskForm({
     jira_link: "",
     created_by: userId,
     pull_requests_links: [""],
+    priority: "low",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -174,6 +174,7 @@ export default function TaskForm({
         jira_link: "",
         created_by: userId,
         pull_requests_links: [""],
+        priority: "low",
       });
       setErrors({});
       setPrErrors({});
@@ -288,6 +289,29 @@ export default function TaskForm({
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             >
               {statusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Priority */}
+          <div>
+            <label
+              htmlFor="priority"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Priority
+            </label>
+            <select
+              id="priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            >
+              {priorityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
