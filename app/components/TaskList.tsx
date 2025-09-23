@@ -6,6 +6,7 @@ import { tasksApi } from "../services/api";
 import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal"; // Import TaskModal component
 import TaskForm from "./TaskForm"; // Import TaskForm component
+import Search from "./Search";
 
 interface TaskListProps {
   authToken: string;
@@ -193,6 +194,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               Task Manager
             </h1>
             <div className="flex items-center gap-3">
+              <Search authToken={authToken} />
               <button
                 onClick={fetchTasks}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
