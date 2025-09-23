@@ -101,7 +101,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const handleUpdateTask = async (task: Partial<Task>) => {
     // Add handleUpdateTask function
     try {
-      delete task.username
+      delete task.username;
       const taskData = await tasksApi.updateTask(authToken, task.id!, task);
       setTasks(tasks.map((t) => (t.id === taskData.id ? taskData : t)));
     } catch (err) {
@@ -110,6 +110,10 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     } finally {
       setIsModalOpen(false);
     }
+  };
+
+  const handleSearch = (results: Task[]) => {
+    setTasks(results);
   };
 
   if (loading) {
@@ -194,7 +198,10 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               Task Manager
             </h1>
             <div className="flex items-center gap-3">
-              <Search authToken={authToken} />
+              <Search
+                authToken={authToken}
+                handleSearch={handleSearch}
+              />
               <button
                 onClick={fetchTasks}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
@@ -315,7 +322,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTasks.map((task) => (
               <TaskCard key={task.id} task={task} onClick={handleTaskClick} />
             ))}
