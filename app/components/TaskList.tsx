@@ -18,6 +18,8 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [fromDate, setFromDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>(new Date());
   const [selectedTask, setSelectedTask] = useState<Task | null>(null); // Add state for selected task
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state for modal open
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false); // Add state for task form modal open
@@ -116,6 +118,27 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
     setTasks(results);
   };
 
+  const handleFromDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value ?? "");
+    setFromDate(date);
+  };
+
+  const handleToDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value ?? "");
+    setToDate(date);
+  };
+
+  const handleDateFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (fromDate && toDate) {
+      const filteredByDate = tasks.filter((task) => {
+        const taskDate = new Date(task.end_date);
+        return taskDate >= fromDate && taskDate <= toDate;
+      });
+      setTasks(filteredByDate);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
@@ -198,10 +221,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               Task Manager
             </h1>
             <div className="flex items-center gap-3">
-              <Search
-                authToken={authToken}
-                handleSearch={handleSearch}
-              />
+              <Search authToken={authToken} handleSearch={handleSearch} />
               <button
                 onClick={fetchTasks}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
@@ -291,6 +311,35 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                 {label} ({count})
               </button>
             ))}
+            <form
+              className="flex items-center gap-4 ml-auto"
+              onSubmit={handleDateFormSubmit}
+            >
+              <div>
+                <label>From</label>
+                <input
+                  type="date"
+                  className="border"
+                  aria-label="from-date"
+                  onChange={handleFromDateChange}
+                />
+              </div>
+              <div>
+                <label>To</label>
+                <input
+                  type="date"
+                  className="border"
+                  aria-label="to-date"
+                  onChange={handleToDateChange}
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-white text-black rounded-4xl px-2 cursor-pointer"
+              >
+                Submit
+              </button>
+            </form>
           </div>
         </div>
 
