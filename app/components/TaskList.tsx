@@ -312,32 +312,49 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
               </button>
             ))}
             <form
-              className="flex items-center gap-4 ml-auto"
+              className="flex items-center gap-4 ml-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3"
               onSubmit={handleDateFormSubmit}
             >
-              <div>
-                <label>From</label>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  From
+                </label>
                 <input
                   type="date"
-                  className="border"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                   aria-label="from-date"
                   onChange={handleFromDateChange}
                 />
               </div>
-              <div>
-                <label>To</label>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  To
+                </label>
                 <input
                   type="date"
-                  className="border"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                   aria-label="to-date"
                   onChange={handleToDateChange}
                 />
               </div>
               <button
                 type="submit"
-                className="bg-white text-black rounded-4xl px-2 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer self-end"
               >
-                Submit
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                  ></path>
+                </svg>
+                Filter
               </button>
             </form>
           </div>
