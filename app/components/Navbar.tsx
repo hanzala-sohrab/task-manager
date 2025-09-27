@@ -62,7 +62,10 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+            <Link
+              href="/"
+              className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+            >
               Task Manager
             </Link>
           </div>
@@ -72,46 +75,46 @@ export default function Navbar() {
             {isAuthenticated ? (
               <>
                 {/* Authenticated User Links */}
-                <Link 
-                  href="/tasks" 
+                <Link
+                  href="/tasks"
                   className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Tasks
                 </Link>
-                
+
                 {/* User Info */}
                 <div className="text-gray-700 dark:text-gray-300 px-3 py-2 text-sm">
                   Welcome, {user?.name || user?.email}
                 </div>
-                
+
                 {/* Logout Button */}
                 <button
                   onClick={handleSignOut}
                   disabled={isLoading}
                   className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  {isLoading ? 'Signing out...' : 'Logout'}
+                  {isLoading ? "Signing out..." : "Logout"}
                 </button>
               </>
             ) : (
               <>
                 {/* Non-authenticated User Links */}
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Login
                 </Link>
-                
-                <Link 
-                  href="/login" 
+
+                <Link
+                  href="/login"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Register
                 </Link>
-                
-                <Link 
-                  href="/tasks" 
+
+                <Link
+                  href="/tasks"
                   className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Tasks

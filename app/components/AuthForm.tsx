@@ -10,10 +10,10 @@ interface AuthFormProps {
 export default function AuthForm({ onSubmit, isLoading = false }: AuthFormProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 

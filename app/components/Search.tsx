@@ -67,7 +67,9 @@ export default function Search({
     <div className="relative">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg
-          className={`w-5 h-5 ${isSearching ? 'text-blue-500' : 'text-gray-400'}`}
+          className={`w-5 h-5 ${
+            isSearching ? "text-blue-500" : "text-gray-400"
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -80,7 +82,7 @@ export default function Search({
           />
         </svg>
       </div>
-      
+
       <input
         type="text"
         placeholder="Search tasks..."
@@ -88,7 +90,7 @@ export default function Search({
         onChange={handleChange}
         className="w-80 pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
       />
-      
+
       {query && (
         <button
           onClick={clearSearch}
@@ -109,7 +111,7 @@ export default function Search({
           </svg>
         </button>
       )}
-      
+
       {isSearching && (
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           <svg
