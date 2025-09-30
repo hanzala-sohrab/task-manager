@@ -7,6 +7,7 @@ import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal"; // Import TaskModal component
 import TaskForm from "./TaskForm"; // Import TaskForm component
 import Search from "./Search";
+import Image from "next/image";
 
 interface TaskListProps {
   authToken: string;
@@ -217,9 +218,18 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Task Manager
-            </h1>
+            <div className="flex items-center gap-4">
+              <Image
+                src="/logo.svg"
+                alt="Task Manager Logo"
+                className="w-12 h-12"
+                height={50}
+                width={50}
+              />
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Task Manager
+              </h1>
+            </div>
             <div className="flex items-center gap-3">
               <Search authToken={authToken} handleSearch={handleSearch} />
               <button
