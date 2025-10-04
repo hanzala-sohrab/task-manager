@@ -11,10 +11,9 @@ import Image from "next/image";
 
 interface TaskListProps {
   authToken: string;
-  onSignOut: () => void;
 }
 
-export default function TaskList({ authToken, onSignOut }: TaskListProps) {
+export default function TaskList({ authToken }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -218,18 +217,6 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-4">
-              <Image
-                src="/logo.svg"
-                alt="Task Manager Logo"
-                className="w-12 h-12"
-                height={50}
-                width={50}
-              />
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Task Manager
-              </h1>
-            </div>
             <div className="flex items-center gap-3">
               <Search authToken={authToken} handleSearch={handleSearch} />
               <button
@@ -252,26 +239,6 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                 Refresh
               </button>
               <button
-                onClick={onSignOut}
-                className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  ></path>
-                </svg>
-                Sign Out
-              </button>
-              <button
                 onClick={() => setIsTaskFormOpen(true)}
                 className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
               >
@@ -291,41 +258,11 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                 Create Task
               </button>
             </div>
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {[
-              { key: "all", label: "All Tasks", count: statusCounts.all },
-              { key: "pending", label: "Pending", count: statusCounts.pending },
-              {
-                key: "in_progress",
-                label: "In Progress",
-                count: statusCounts.in_progress,
-              },
-              {
-                key: "completed",
-                label: "Completed",
-                count: statusCounts.completed,
-              },
-            ].map(({ key, label, count }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors cursor-pointer ${
-                  filter === key
-                    ? "bg-blue-600 text-white"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600"
-                }`}
-              >
-                {label} ({count})
-              </button>
-            ))}
             <form
               className="flex items-center gap-4 ml-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3"
               onSubmit={handleDateFormSubmit}
             >
-              <div className="flex flex-col">
+              <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   From
                 </label>
@@ -336,7 +273,7 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                   onChange={handleFromDateChange}
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   To
                 </label>
@@ -367,6 +304,37 @@ export default function TaskList({ authToken, onSignOut }: TaskListProps) {
                 Filter
               </button>
             </form>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              { key: "all", label: "All Tasks", count: statusCounts.all },
+              { key: "pending", label: "Pending", count: statusCounts.pending },
+              {
+                key: "in_progress",
+                label: "In Progress",
+                count: statusCounts.in_progress,
+              },
+              {
+                key: "completed",
+                label: "Completed",
+                count: statusCounts.completed,
+              },
+            ].map(({ key, label, count }) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors cursor-pointer ${
+                  filter === key
+                    ? "bg-blue-600 text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600"
+                }`}
+              >
+                {label} ({count})
+              </button>
+            ))}
+            
           </div>
         </div>
 

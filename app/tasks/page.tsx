@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TaskList from '../components/TaskList';
+import Navbar from '../components/Navbar';
 
 export default function TasksPage() {
   const router = useRouter();
@@ -69,5 +70,8 @@ export default function TasksPage() {
     return null; // Will redirect to login
   }
 
-  return <TaskList authToken={authToken} onSignOut={handleSignOut} />;
+  return <>
+    <Navbar />
+    <TaskList authToken={authToken} onSignOut={handleSignOut} /> 
+  </>;
 }

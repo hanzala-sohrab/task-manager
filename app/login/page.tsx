@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthForm from "../components/AuthForm";
 import { authApi, LoginResponse } from "../services/api";
+import Navbar from "../components/Navbar";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,8 +57,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <AuthForm onSubmit={handleAuth} isLoading={isLoading} />
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <AuthForm onSubmit={handleAuth} isLoading={isLoading} />
+      </div>
     </div>
   );
 }
