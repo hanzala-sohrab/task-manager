@@ -26,7 +26,7 @@ export default function Search({
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       setQuery(value);
-      
+
       if (value.trim() === "") {
         // If search is cleared, fetch all tasks
         setIsSearching(true);
@@ -58,7 +58,7 @@ export default function Search({
     setQuery("");
     // Trigger fetch of all tasks when search is cleared
     const event = {
-      target: { value: "" }
+      target: { value: "" },
     } as React.ChangeEvent<HTMLInputElement>;
     handleChange(event);
   };

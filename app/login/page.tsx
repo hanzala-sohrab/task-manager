@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import AuthForm from '../components/AuthForm';
-import { authApi, LoginResponse } from '../services/api';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import AuthForm from "../components/AuthForm";
+import { authApi, LoginResponse } from "../services/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   const handleAuth = async (email: string, password: string, name?: string) => {
     setIsLoading(true);
-    
+
     try {
       if (name) {
         // Sign up flow
@@ -20,7 +20,7 @@ export default function LoginPage() {
 
       // Login flow
       const loginData: LoginResponse = await authApi.login(email, password);
-      console.log('Login successful:', loginData);
+      console.log("Login successful:", loginData);
 
       // Store user data and token if provided
       const userData = {
@@ -30,19 +30,26 @@ export default function LoginPage() {
 
       // Store access token in localStorage if provided by backend
       if (loginData.access_token) {
-        localStorage.setItem('authToken', loginData.access_token);
-        localStorage.setItem('tokenType', loginData.token_type || 'bearer');
-        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem("authToken", loginData.access_token);
+        localStorage.setItem("tokenType", loginData.token_type || "bearer");
+        localStorage.setItem("userData", JSON.stringify(userData));
       }
-      
-      alert(`${name ? 'Account created and signed in' : 'Signed in'} successfully! Welcome${userData.name ? ` ${userData.name}` : ''}!`);
-      
+
+      alert(
+        `${
+          name ? "Account created and signed in" : "Signed in"
+        } successfully! Welcome${userData.name ? ` ${userData.name}` : ""}!`
+      );
+
       // Redirect to tasks page after successful login
-      router.push('/tasks');
-      
+      router.push("/tasks");
     } catch (error) {
-      console.error('Authentication error:', error);
-      alert(error instanceof Error ? error.message : 'Authentication failed. Please try again.');
+      console.error("Authentication error:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Authentication failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
