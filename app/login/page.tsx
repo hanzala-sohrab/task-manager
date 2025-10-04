@@ -35,21 +35,21 @@ export default function LoginPage() {
         localStorage.setItem("userData", JSON.stringify(userData));
       }
 
-      alert(
-        `${
-          name ? "Account created and signed in" : "Signed in"
-        } successfully! Welcome${userData.name ? ` ${userData.name}` : ""}!`
-      );
+      // alert(
+      //   `${
+      //     name ? "Account created and signed in" : "Signed in"
+      //   } successfully! Welcome${userData.name ? ` ${userData.name}` : ""}!`
+      // );
 
       // Redirect to tasks page after successful login
       router.push("/tasks");
     } catch (error) {
       console.error("Authentication error:", error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Authentication failed. Please try again."
-      );
+      // alert(
+      //   error instanceof Error
+      //     ? error.message
+      //     : "Authentication failed. Please try again."
+      // );
     } finally {
       setIsLoading(false);
     }
