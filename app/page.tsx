@@ -86,13 +86,13 @@ export default function Home() {
               <>
                 <button
                   onClick={() => router.push('/login')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors cursor-pointer"
                 >
                   Get Started
                 </button>
                 <button
                   onClick={() => router.push('/tasks')}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors cursor-pointer"
                 >
                   Browse Tasks
                 </button>
