@@ -329,7 +329,7 @@ export default function TaskForm({
                 Start Date *
               </label>
               <input
-                type="datetime-local"
+                type="date"
                 id="start_date"
                 name="start_date"
                 value={formData.start_date}
@@ -353,7 +353,7 @@ export default function TaskForm({
                 End Date *
               </label>
               <input
-                type="datetime-local"
+                type="date"
                 id="end_date"
                 name="end_date"
                 value={formData.end_date}
