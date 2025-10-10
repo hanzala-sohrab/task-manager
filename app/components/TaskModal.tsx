@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Task } from '../types/task';
-import { copyToClipboard } from '../utils/copyToClipboard';
+import { useState } from "react";
+import { Task } from "../types/task";
+import { copyToClipboard } from "../utils/copyToClipboard";
 
 interface TaskModalProps {
   task: Task | null;
@@ -11,7 +11,12 @@ interface TaskModalProps {
   onUpdateTask: (updatedTask: Task) => Promise<void>;
 }
 
-export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskModalProps) {
+export default function TaskModal({
+  task,
+  isOpen,
+  onClose,
+  onUpdateTask,
+}: TaskModalProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState<Task | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,10 +25,10 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
   if (!isOpen || !task) return null;
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
       // hour: '2-digit',
       // minute: '2-digit',
     });
@@ -36,20 +41,19 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'in_progress':
-      case 'in progress':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+      case "completed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "in_progress":
+      case "in progress":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "overdue":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
-
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case "high":
@@ -80,12 +84,14 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     if (!formData) return;
-    
+
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev!,
       [name]: value,
     }));
@@ -101,7 +107,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
       setIsEditMode(false);
       setFormData(null);
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error("Error updating task:", error);
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +120,7 @@ export default function TaskModal({ task, isOpen, onClose, onUpdateTask }: TaskM
       setCopiedLink(link);
       setTimeout(() => setCopiedLink(null), 2000);
     } catch (error) {
-      console.error('Failed to copy link:', error);
+      console.error("Failed to copy link:", error);
     }
   };
 

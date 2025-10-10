@@ -7,7 +7,6 @@ import TaskCard from "./TaskCard";
 import TaskModal from "./TaskModal"; // Import TaskModal component
 import TaskForm from "./TaskForm"; // Import TaskForm component
 import Search from "./Search";
-import Image from "next/image";
 
 interface TaskListProps {
   authToken: string;
@@ -55,6 +54,7 @@ export default function TaskList({ authToken }: TaskListProps) {
       pending: 0,
       in_progress: 0,
       completed: 0,
+      overdue: 0,
     };
 
     tasks.forEach((task) => {
@@ -321,6 +321,11 @@ export default function TaskList({ authToken }: TaskListProps) {
                 label: "Completed",
                 count: statusCounts.completed,
               },
+              {
+                key: "overdue",
+                label: "Overdue",
+                count: statusCounts.overdue,
+              },
             ].map(({ key, label, count }) => (
               <button
                 key={key}
@@ -334,7 +339,6 @@ export default function TaskList({ authToken }: TaskListProps) {
                 {label} ({count})
               </button>
             ))}
-            
           </div>
         </div>
 
